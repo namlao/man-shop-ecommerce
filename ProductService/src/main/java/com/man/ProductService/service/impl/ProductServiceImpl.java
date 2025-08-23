@@ -13,6 +13,7 @@ import com.man.ProductService.request.ProductCreateRequest;
 import com.man.ProductService.request.ProductEditRequest;
 import com.man.ProductService.response.ProductCreateReponse;
 import com.man.ProductService.response.ProductEditReponse;
+import com.man.ProductService.response.ProductGetByIdResponse;
 import com.man.ProductService.service.ProductService;
 
 @Service
@@ -51,7 +52,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public void delete(Long id) {
 		Product product = repository.findById(id)
-				.orElseThrow(()->new ProductNotFoundException("Product not foud with id "+ id));
+				.orElseThrow(()->new ProductNotFoundException("Product not found with id "+ id));
 		
 		repository.delete(product);
 
@@ -60,7 +61,9 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public Product getById(Long id) {
 		// TODO Auto-generated method stub
-		return repository.getById(id);
+		Product product = repository.findById(id)
+				.orElseThrow(()->new ProductNotFoundException("Product not found with id "+ id));
+		return product;
 	}
 
 	@Override

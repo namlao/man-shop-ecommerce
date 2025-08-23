@@ -8,9 +8,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.man.ProductService.Entity.Product;
@@ -22,15 +24,17 @@ import com.man.ProductService.response.ListProductResponse;
 import com.man.ProductService.response.ProductCreateReponse;
 import com.man.ProductService.response.ProductDeleteResponse;
 import com.man.ProductService.response.ProductEditReponse;
+import com.man.ProductService.response.ProductGetByIdResponse;
 import com.man.ProductService.service.ProductService;
 
 @RestController
 public class ProductController {
 	@Autowired
 	private ProductService service;
-
+	
 	@Autowired
 	private ModelMapper mapper;
+
 
 	@GetMapping("/list")
 	public ListProductResponse list() {
@@ -53,7 +57,7 @@ public class ProductController {
 	}
 
 	@DeleteMapping("/delete")
-	public ResponseEntity<ProductDeleteResponse> edit(@RequestBody ProductDeleteRequest productReq) {
+	public ResponseEntity<ProductDeleteResponse> delete(@RequestBody ProductDeleteRequest productReq) {
 		try {
 			Product product = service.getById(productReq.getId());
 			service.delete(product.getId());
@@ -64,5 +68,14 @@ public class ProductController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ProductDeleteResponse(404L, e.getMessage()));
 		}
 
+	}
+	
+	@GetMapping("/{id}")
+	public ProductGetByIdResponse getById(@PathVariable Long id) {
+		Product product = service.getById(id);
+		
+		return mapper.map(product, ProductGetByIdResponse.class);
+		
+		
 	}
 }

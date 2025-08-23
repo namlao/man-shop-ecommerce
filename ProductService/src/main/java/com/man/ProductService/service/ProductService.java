@@ -7,6 +7,7 @@ import com.man.ProductService.request.ProductCreateRequest;
 import com.man.ProductService.request.ProductEditRequest;
 import com.man.ProductService.response.ProductCreateReponse;
 import com.man.ProductService.response.ProductEditReponse;
+import com.man.ProductService.response.ProductGetByIdResponse;
 
 public interface ProductService{
 	List<Product> getList();
