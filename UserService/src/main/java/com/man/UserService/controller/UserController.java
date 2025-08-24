@@ -18,9 +18,13 @@ import com.man.UserService.exception.UserNotFoundException;
 import com.man.UserService.request.UserCreateRequest;
 import com.man.UserService.request.UserDeleteRequest;
 import com.man.UserService.request.UserEditRequest;
+import com.man.UserService.request.UserGetByIdRequest;
+import com.man.UserService.request.UserGetByUsernameRequest;
 import com.man.UserService.response.UserCreateResponse;
 import com.man.UserService.response.UserDeleteResponse;
 import com.man.UserService.response.UserEditResponse;
+import com.man.UserService.response.UserGetByIdResponse;
+import com.man.UserService.response.UserGetByUsernameResponse;
 import com.man.UserService.service.UserService;
 
 @RestController
@@ -33,9 +37,18 @@ public class UserController {
 		return service.userList();
 	}
 	
-	@GetMapping("/{username}")
-	public List<User> getByUsername(@PathVariable String username){
-		return service.findByUsername(username);
+	@GetMapping("/u/{username}")
+	public UserGetByUsernameResponse getByUsername(@PathVariable("username") String username){
+		UserGetByUsernameRequest request = new UserGetByUsernameRequest();
+		request.setUsername(username);
+		return service.findByUsername(request);
+	}
+	
+	@GetMapping("/i/{id}")
+	public UserGetByIdResponse getById(@PathVariable("id") Long id){
+		UserGetByIdRequest request = new UserGetByIdRequest();
+		request.setId(id);
+		return service.findById(request);
 	}
 	
 	@PostMapping("/create")

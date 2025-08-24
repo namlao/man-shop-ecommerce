@@ -8,12 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.man.auth_service.entity.RefreshToken;
-import com.man.auth_service.entity.UserEntity;
 import com.man.auth_service.repository.RefreshTokenReposittory;
 
 @Service
 public class RefreshTokenService{
 	private RefreshTokenReposittory reposittory;
+	
+//	private UserClient client;
 	
 	private final Duration REFRESH_TTL = Duration.ofDays(7);
 
@@ -23,9 +24,9 @@ public class RefreshTokenService{
 	}
 	
 	
-	public RefreshToken create(UserEntity user) {
+	public RefreshToken create(Long user) {
 		RefreshToken rt = new RefreshToken();
-		rt.setUser(user);
+		rt.setUserId(user);
 		rt.setToken(UUID.randomUUID().toString());
 		rt.setExpiryDate(Instant.now().plus(REFRESH_TTL));
 		rt.setRevoked(false);
@@ -43,22 +44,22 @@ public class RefreshTokenService{
 		current.setRevoked(true);
 		reposittory.save(current);
 		
-		return create(current.getUser());
+		return create(current.getUserId());
 	}
 	
 	@Transactional
 	public void revokeAllByUserId(Long userId) {
-		reposittory.deleteByUser_Id(userId);
+		reposittory.deleteByUserId(userId);
 	}
 	
-	public UserEntity getUserByToken(String token) {
+	public Long getUserByToken(String token) {
 		RefreshToken rt = reposittory.findByToken(token)
 				.orElseThrow(()-> new IllegalArgumentException("Invalid refresh token"));
 		if(rt.isRevoked() || rt.getExpiryDate().isBefore(Instant.now())) {
 			throw new IllegalStateException("Refresh token expired or revoked");
 		}
 		
-		return rt.getUser();
+		return rt.getUserId();
 	}
 	
 }

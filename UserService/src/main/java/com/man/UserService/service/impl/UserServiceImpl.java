@@ -12,8 +12,12 @@ import com.man.UserService.exception.UserNotFoundException;
 import com.man.UserService.repository.UserRepository;
 import com.man.UserService.request.UserCreateRequest;
 import com.man.UserService.request.UserEditRequest;
+import com.man.UserService.request.UserGetByIdRequest;
+import com.man.UserService.request.UserGetByUsernameRequest;
 import com.man.UserService.response.UserCreateResponse;
 import com.man.UserService.response.UserEditResponse;
+import com.man.UserService.response.UserGetByIdResponse;
+import com.man.UserService.response.UserGetByUsernameResponse;
 import com.man.UserService.service.UserService;
 
 @Service
@@ -92,9 +96,17 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<User> findByUsername(String username) {
+	public UserGetByUsernameResponse findByUsername(UserGetByUsernameRequest userReq) {
 		// TODO Auto-generated method stub
-		return repository.findByUsername(username);
+		User user = repository.findByUsername(userReq.getUsername()).orElseThrow(()->new RuntimeException("User Not found with username: "+userReq.getUsername()));
+		return mapper.map(user, UserGetByUsernameResponse.class);
+	}
+	
+	@Override
+	public UserGetByIdResponse findById(UserGetByIdRequest userRq) {
+		User user = repository.findById(userRq.getId())
+				.orElseThrow(() -> new UserNotFoundException("User not found with id " + userRq.getId()));
+		return mapper.map(user, UserGetByIdResponse.class);
 	}
 
 }

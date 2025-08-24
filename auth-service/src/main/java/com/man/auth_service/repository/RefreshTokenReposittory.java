@@ -11,6 +11,6 @@ import com.man.auth_service.entity.RefreshToken;
 public interface RefreshTokenReposittory extends JpaRepository<RefreshToken, Long>{
 	Optional<RefreshToken> findByToken(String token);
 	
-	long deleteByUser_Id(Long id);
+	long deleteByUserId(Long userId);
 
 }
