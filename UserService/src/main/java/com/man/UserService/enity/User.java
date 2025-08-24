@@ -1,4 +1,4 @@
-package com.man.auth_service.entity;
+package com.man.UserService.enity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +12,7 @@ import lombok.Setter;
 @Entity
 @Table(name = "users")
 @Getter @Setter
-public class UserEntity {
+public class User {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
