@@ -6,6 +6,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,7 +38,9 @@ public class ProductController {
 
 
 	@GetMapping("/list")
+	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 	public ListProductResponse list() {
+		System.out.println("xin chào");
 		List<Product> listProduct = service.getList();
 		ListProductResponse resp = new ListProductResponse();
 		resp.setProducts(listProduct);
@@ -46,17 +49,20 @@ public class ProductController {
 	}
 
 	@PostMapping("/create")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ProductCreateReponse create(@RequestBody ProductCreateRequest product) {
 		return service.create(product);
 	}
 
 	@PutMapping("/edit")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ProductEditReponse edit(@RequestBody ProductEditRequest product) {
 		return service.edit(product);
 
 	}
 
 	@DeleteMapping("/delete")
+	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<ProductDeleteResponse> delete(@RequestBody ProductDeleteRequest productReq) {
 		try {
 			Product product = service.getById(productReq.getId());

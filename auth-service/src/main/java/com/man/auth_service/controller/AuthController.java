@@ -51,7 +51,7 @@ public class AuthController {
 			throw new RuntimeException("Invaild password");
 		}
 
-		String accessToken = jwtUtil.generateToken(user.getUsername());
+		String accessToken = jwtUtil.generateToken(user.getUsername(),user.getRole());
 		RefreshToken refreshToken = refreshTokenService.create(user.getId());
 
 		return Map.of("token", "Bearer", "accessToken", accessToken, "expiresIn", jwtUtil.getAccessTokenExpirySeconds(),
@@ -68,7 +68,7 @@ public class AuthController {
 
 		RefreshToken newRefresh = refreshTokenService.rotate(oldRefresh);
 
-		String newAccess = jwtUtil.generateToken(user.getUsername());
+		String newAccess = jwtUtil.generateToken(user.getUsername(),user.getRole());
 
 		return Map.of("tokenType", "Bearer", "accessToken", newAccess, "expiresIn",
 				jwtUtil.getAccessTokenExpirySeconds(), "refreshToken", newRefresh.getToken());

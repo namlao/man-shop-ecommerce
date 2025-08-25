@@ -2,9 +2,12 @@ package com.man.auth_service.utils;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -17,9 +20,12 @@ public class JwtUtil {
 	
 	private final Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
 	
-	public String generateToken(String username) {
+	public String generateToken(String username, String role) {
+		HashMap<String, Object>  claims = new HashMap<>();
+		claims.put("role", role);
 		return Jwts.builder()
 				.setSubject(username)
+				.setClaims(claims)
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis()+ACCESS_TOKEN_EXPIRATION))
 				.signWith(key, SignatureAlgorithm.HS256)
@@ -27,19 +33,24 @@ public class JwtUtil {
 	}
 	
 	public String extractUsername(String token) {
-		return Jwts.parserBuilder().setSigningKey(key).build()
-				.parseClaimsJws(token)
-				.getBody()
-				.getSubject();
+		return extractAllClaim(token).getSubject();
+	}
+	
+	public String extractRole(String token) {
+		return extractAllClaim(token).get("role",String.class);
 	}
 	
 	public boolean validateToken(String token) {
 		try {
-			Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+			Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
 			return true;
 		}catch (JwtException e) {
 			return false;
 		}
+	}
+	
+	public Claims extractAllClaim(String token) {
+		return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
 	}
 	
 	public long getAccessTokenExpirySeconds() {
