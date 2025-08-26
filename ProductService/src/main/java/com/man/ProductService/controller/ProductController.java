@@ -40,7 +40,6 @@ public class ProductController {
 	@GetMapping("/list")
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 	public ListProductResponse list() {
-		System.out.println("xin chào");
 		List<Product> listProduct = service.getList();
 		ListProductResponse resp = new ListProductResponse();
 		resp.setProducts(listProduct);

@@ -26,7 +26,7 @@ public class JwtAuthGlobalFilter implements GlobalFilter, Ordered {
 //	private final JwtUtil jwtUtil;
 
 	private static final List<String> WHiTELIST = List.of("/auth/login", "/auth/refresh", "/auth/logout",
-			"/actuator/**", "/eureka/**","/users/create"
+			"/actuator/**", "/eureka/**","/users/create","/cart/**"
 
 	);
 
@@ -55,23 +55,24 @@ public class JwtAuthGlobalFilter implements GlobalFilter, Ordered {
 		}
 		String token = authHeader.substring(7);
 
-		Claims claims;
+//		Claims claims;
 
 		try {
-			claims = jwtValidator.parseClaims(token);
+			jwtValidator.parseClaims(token);
 		} catch (JwtException e) {
 			// TODO: handle exception
 			return unauthorized(exchange, "Invalid or expired token");
 		}
 
-		String username = jwtValidator.getUsername(claims).orElse("");
-		String role = jwtValidator.getRole(claims).orElse("USER");
-
-		ServerHttpRequest request = exchange.getRequest().mutate().header("X-Auth-Users", username)
-				.header("X-Auth-Roles", role).build();
+//		String username = jwtValidator.getUsername(claims).orElse("");
+//		String role = jwtValidator.getRole(claims).orElse("USER");
+//
+//		ServerHttpRequest request = exchange.getRequest().mutate().header("X-Auth-Users", username)
+//				.header("X-Auth-Roles", role).build();
 
 		
-		return chain.filter(exchange.mutate().request(request).build());
+//		return chain.filter(exchange.mutate().request(request).build());
+		return chain.filter(exchange);
 	}
 
 	public boolean isWhiteListed(String path) {
