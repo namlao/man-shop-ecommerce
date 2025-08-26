@@ -12,6 +12,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.man.CartService.entity.Cart;
 import com.man.CartService.entity.CartItem;
+import com.man.CartService.request.AddProductToCartRequest;
+import com.man.CartService.request.CartCreateRequest;
+import com.man.CartService.response.AddProductToCartResponse;
+import com.man.CartService.response.CartCreateResponse;
 import com.man.CartService.service.CartService;
 
 @RestController
@@ -20,13 +24,14 @@ public class CartController {
 	@Autowired private CartService service;
 	
 	@PostMapping("/create")
-	public Cart create(@RequestBody Cart cartReq) {
+	public CartCreateResponse create(@RequestBody CartCreateRequest cartReq) {
+		
 		return service.createCart(cartReq);
 	}
 	
-	@PostMapping("/{cartId}/product")
-	public Cart addProductToCart(@PathVariable("cartId") Long cartId, @RequestBody List<CartItem> cartReq) {
-		return service.addProductToCart(cartId,cartReq);
+	@PostMapping("/addProduct")
+	public AddProductToCartResponse addProductToCart(@RequestBody AddProductToCartRequest cartReq) {
+		return service.addProductToCart(cartReq);
 	}
 	
 	@DeleteMapping("/{cartId}/product")

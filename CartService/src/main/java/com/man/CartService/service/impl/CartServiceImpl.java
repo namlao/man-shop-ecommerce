@@ -11,6 +11,11 @@ import com.man.CartService.entity.Cart;
 import com.man.CartService.entity.CartItem;
 import com.man.CartService.repository.CartRepository;
 import com.man.CartService.repository.ItemCartRepository;
+import com.man.CartService.request.AddProductToCartRequest;
+import com.man.CartService.request.CartCreateRequest;
+import com.man.CartService.response.AddProductToCartResponse;
+import com.man.CartService.response.CartCreateResponse;
+import com.man.CartService.response.CartItemResponse;
 import com.man.CartService.service.CartService;
 
 import jakarta.transaction.Transactional;
@@ -27,33 +32,48 @@ public class CartServiceImpl implements CartService {
 	private ModelMapper mapper;
 
 	@Override
-	public Cart createCart(Cart cartReq) {
+	public CartCreateResponse createCart(CartCreateRequest cartReq) {
+
 		Cart cart = mapper.map(cartReq, Cart.class);
 
 		Long total = 0L;
-		for (CartItem item : cartReq.getItems()) {
-			total += item.getSubTotal();
+		if (cart.getItems() != null) {
+			for (CartItem item : cartReq.getItems()) {
+				item.setCart(cart);
+				total += item.getSubTotal();
+			}
 		}
-		cart.setTotal(total);
-		repository.save(cart);
 
-		return cart;
+		cart.setTotal(total);
+		cart = repository.save(cart);
+
+		List<CartItemResponse> cartCreateResponses = cart.getItems().stream()
+				.map(item -> mapper.map(item, CartItemResponse.class)).toList();
+
+		CartCreateResponse cartCreateResponse = mapper.map(cart, CartCreateResponse.class);
+		cartCreateResponse.setItems(cartCreateResponses);
+
+		return cartCreateResponse;
 	}
 
 	@Override
-	public Cart addProductToCart(Long carId, List<CartItem> itemReqs) {
-		Cart cart = repository.findById(carId).orElseThrow(() -> new RuntimeException("Cart not found"));
+	public AddProductToCartResponse addProductToCart(AddProductToCartRequest itemReqs) {
+		Cart cart = repository.findById(itemReqs.getId()).orElseThrow(() -> new RuntimeException("Cart not found"));
 
 		Long total = cart.getTotal();
-		for (CartItem item : itemReqs) {
+		List<CartItem> cartItemResponses = itemReqs.getItems().stream().map(item -> mapper.map(item, CartItem.class))
+				.toList();
+
+		for (CartItem item : cartItemResponses) {
 			total += item.getSubTotal();
 			item.setCart(cart);
+			cart.getItems().add(item);
 			itemCartRepository.save(item);
 		}
-
 		cart.setTotal(total);
-		repository.save(cart);
-		return cart;
+		cart = repository.save(cart);
+
+		return mapper.map(cart, AddProductToCartResponse.class);
 	}
 
 	@Override
