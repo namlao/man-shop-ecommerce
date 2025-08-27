@@ -12,5 +12,5 @@ import lombok.Setter;
 public class CartCreateRequest {
 	private Long id;
 	private Long userId;
-	private List<CartItem> items;
+	private List<CartItemRequest> items;
 }

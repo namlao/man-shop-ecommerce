@@ -7,6 +7,8 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.man.CartService.client.ProductClient;
+import com.man.CartService.client.UserClient;
 import com.man.CartService.entity.Cart;
 import com.man.CartService.entity.CartItem;
 import com.man.CartService.repository.CartRepository;
@@ -31,49 +33,81 @@ public class CartServiceImpl implements CartService {
 	private ItemCartRepository itemCartRepository;
 
 	@Autowired
+	private ProductClient productClient;
+
+	@Autowired
+	private UserClient userClient;
+
+	@Autowired
 	private ModelMapper mapper;
 
 	@Override
 	public CartCreateResponse createCart(CartCreateRequest cartReq) {
-
 		Cart cart = mapper.map(cartReq, Cart.class);
 
-		Long total = 0L;
-		if (cart.getItems() != null) {
-			for (CartItem item : cartReq.getItems()) {
-				item.setCart(cart);
-				total += item.getSubTotal();
-			}
-		}
+		List<CartItem> cartItems = cartReq.getItems().stream().map(itemReq -> {
+			CartItem item = mapper.map(itemReq, CartItem.class);
+			item.setCart(cart);
+			Long subTotal = productClient.getById(item.getProductId()).getPrice() * item.getQuantity();
+			item.setSubTotal(subTotal);
+			return item;
+		}).toList();
 
+		cart.setItems(cartItems);
+
+		Long total = cartItems.stream().mapToLong(CartItem::getSubTotal).sum();
 		cart.setTotal(total);
-		cart = repository.save(cart);
 
-		List<CartItemResponse> cartCreateResponses = cart.getItems().stream()
+		Cart saved = repository.save(cart);
+
+		List<CartItemResponse> itemResponses = saved.getItems().stream()
 				.map(item -> mapper.map(item, CartItemResponse.class)).toList();
 
-		CartCreateResponse cartCreateResponse = mapper.map(cart, CartCreateResponse.class);
-		cartCreateResponse.setItems(cartCreateResponses);
-
-		return cartCreateResponse;
+		CartCreateResponse response = mapper.map(saved, CartCreateResponse.class);
+		response.setItems(itemResponses);
+		return response;
 	}
 
 	@Override
 	public AddProductToCartResponse addProductToCart(AddProductToCartRequest itemReqs) {
+
 		Cart cart = repository.findById(itemReqs.getId()).orElseThrow(() -> new RuntimeException("Cart not found"));
 
-		Long total = cart.getTotal();
-		List<CartItem> cartItemResponses = itemReqs.getItems().stream().map(item -> mapper.map(item, CartItem.class))
-				.toList();
+		List<CartItem> cartItems = itemReqs.getItems().stream().map(item -> {
+			Long subTotal = productClient.getById(item.getProductId()).getPrice() * item.getQuantity();
+			item.setSubTotal(subTotal);
+			return mapper.map(item, CartItem.class);
+		}).toList();
 
-		for (CartItem item : cartItemResponses) {
-			total += item.getSubTotal();
-			item.setCart(cart);
-			cart.getItems().add(item);
-			itemCartRepository.save(item);
+		Long total = cart.getTotal();
+
+		for (CartItem item : cartItems) {
+			CartItem oldCartItem = itemCartRepository.findByCartIdAndProductId(cart.getId(), item.getProductId())
+					.orElse(null);
+			if (oldCartItem != null) {
+				System.out.println("Tìm thấy productId: Quanity cũ: "+ oldCartItem.getQuantity() +" Quanity req: "+item.getQuantity());
+				Long newQuantity = oldCartItem.getQuantity() + item.getQuantity();
+				oldCartItem.setQuantity(newQuantity);
+				
+				System.out.println("Tìm thấy productId: Giá cũ: "+ oldCartItem.getSubTotal() +"Giá req: "+item.getSubTotal());
+				Long newSubTotal = oldCartItem.getSubTotal() + item.getSubTotal();
+				oldCartItem.setSubTotal(newSubTotal);
+				
+				total += item.getQuantity() * productClient.getById(oldCartItem.getProductId()).getPrice();
+			}else {
+				System.out.println("không có productId");
+				CartItem newItem = mapper.map(item, CartItem.class);
+				Long subNewTotal = productClient.getById(newItem.getProductId()).getPrice() * newItem.getQuantity();
+	            newItem.setSubTotal(subNewTotal);
+	            newItem.setCart(cart);
+
+	            cart.addCartItem(newItem);
+	            total += subNewTotal;
+				
+			}
 		}
 		cart.setTotal(total);
-		cart = repository.save(cart);
+	    cart = repository.save(cart);
 
 		return mapper.map(cart, AddProductToCartResponse.class);
 	}
@@ -100,8 +134,8 @@ public class CartServiceImpl implements CartService {
 
 		// lưu db
 		Cart saveCart = repository.save(cart);
-		
-		//Trả về response
+
+		// Trả về response
 		DeleteProductToCartResponse response = mapper.map(saveCart, DeleteProductToCartResponse.class);
 		response.setItems(saveCart.getItems().stream().map(item -> mapper.map(item, CartItemResponse.class))
 				.collect(Collectors.toList()));

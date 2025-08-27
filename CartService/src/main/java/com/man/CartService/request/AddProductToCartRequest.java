@@ -11,6 +11,6 @@ import lombok.Setter;
 @Setter
 public class AddProductToCartRequest {
 	private Long id;
-	private List<CartItemResponse> items;
+	private List<CartItemRequest> items;
 
 }

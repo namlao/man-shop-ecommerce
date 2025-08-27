@@ -9,10 +9,12 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
 	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.csrf().disable().authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
-				.headers(headers -> headers.frameOptions(frame -> frame.disable()))
-				.logout(logout -> logout.disable());
-		return httpSecurity.build();
-	} 
+	public SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
+		security.csrf().disable()
+			.authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+			.headers(header -> header.frameOptions(frame -> frame.disable())).logout(logout -> logout.disable());
+		return security.build();
+
+	}
 }
+

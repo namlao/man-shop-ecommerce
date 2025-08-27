@@ -31,4 +31,8 @@ public class Cart {
 	private List<CartItem> items;
 	
 	private Long total;
+	
+	public void addCartItem(CartItem item) {
+		items.add(item);
+		item.setCart(this);	}
 }
