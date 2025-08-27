@@ -6,15 +6,17 @@ import com.man.CartService.entity.Cart;
 import com.man.CartService.entity.CartItem;
 import com.man.CartService.request.AddProductToCartRequest;
 import com.man.CartService.request.CartCreateRequest;
+import com.man.CartService.request.DeleteProductToCartRequest;
 import com.man.CartService.response.AddProductToCartResponse;
 import com.man.CartService.response.CartCreateResponse;
+import com.man.CartService.response.DeleteProductToCartResponse;
 
 public interface CartService {
 	CartCreateResponse createCart(CartCreateRequest cart);
 
 	AddProductToCartResponse addProductToCart(AddProductToCartRequest item);
 
-	Cart removeProductFromCart(Long carId, List<CartItem> items);
+	DeleteProductToCartResponse removeProductFromCart(DeleteProductToCartRequest cartReq);
 
 	void clearCart(Long Id);
 

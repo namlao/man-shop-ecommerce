@@ -13,9 +13,11 @@ import com.man.CartService.repository.CartRepository;
 import com.man.CartService.repository.ItemCartRepository;
 import com.man.CartService.request.AddProductToCartRequest;
 import com.man.CartService.request.CartCreateRequest;
+import com.man.CartService.request.DeleteProductToCartRequest;
 import com.man.CartService.response.AddProductToCartResponse;
 import com.man.CartService.response.CartCreateResponse;
 import com.man.CartService.response.CartItemResponse;
+import com.man.CartService.response.DeleteProductToCartResponse;
 import com.man.CartService.service.CartService;
 
 import jakarta.transaction.Transactional;
@@ -78,19 +80,33 @@ public class CartServiceImpl implements CartService {
 
 	@Override
 	@Transactional
-	public Cart removeProductFromCart(Long carId, List<CartItem> items) {
-		Cart cart = repository.findById(carId).orElseThrow(() -> new RuntimeException("Cart not found"));
+	public DeleteProductToCartResponse removeProductFromCart(DeleteProductToCartRequest cartReq) {
+		// Lấy cart từ DB
+		Cart cart = repository.findById(cartReq.getCartId()).orElseThrow(() -> new RuntimeException("Cart not found"));
 
-		List<Long> productIds = items.stream().map(u -> u.getProductId()).collect(Collectors.toList());
+		// Lấy ra danh sách productId có trong cartReq
+		List<Long> removeProuctId = cartReq.getItems().stream().map(CartItem::getProductId)
+				.collect(Collectors.toList());
 
-		long removedTotal = cart.getItems().stream().filter(item -> productIds.contains(item.getProductId()))
+		// tính tổng total product trong cartReq
+		Long removeTotal = cart.getItems().stream().filter(item -> removeProuctId.contains(item.getProductId()))
 				.mapToLong(CartItem::getSubTotal).sum();
 
-		cart.getItems().removeIf(item -> productIds.contains(item.getProductId()));
+		// xóa productId trong cart
+		cart.getItems().removeIf(item -> removeProuctId.contains(item.getProductId()));
 
-		cart.setTotal(cart.getTotal() - removedTotal);
+		// cập nhật lại total
+		cart.setTotal(cart.getTotal() - removeTotal);
 
-		return repository.save(cart);
+		// lưu db
+		Cart saveCart = repository.save(cart);
+		
+		//Trả về response
+		DeleteProductToCartResponse response = mapper.map(saveCart, DeleteProductToCartResponse.class);
+		response.setItems(saveCart.getItems().stream().map(item -> mapper.map(item, CartItemResponse.class))
+				.collect(Collectors.toList()));
+
+		return response;
 	}
 
 	@Override

@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.man.CartService.entity.Cart;
-import com.man.CartService.entity.CartItem;
 import com.man.CartService.request.AddProductToCartRequest;
 import com.man.CartService.request.CartCreateRequest;
+import com.man.CartService.request.DeleteProductToCartRequest;
 import com.man.CartService.response.AddProductToCartResponse;
 import com.man.CartService.response.CartCreateResponse;
+import com.man.CartService.response.DeleteProductToCartResponse;
 import com.man.CartService.service.CartService;
 
 @RestController
@@ -34,9 +35,9 @@ public class CartController {
 		return service.addProductToCart(cartReq);
 	}
 	
-	@DeleteMapping("/{cartId}/product")
-	public Cart deleteProductToCart(@PathVariable("cartId") Long cartId, @RequestBody List<CartItem> cartReq) {
-		return service.removeProductFromCart(cartId,cartReq);
+	@DeleteMapping("/deleteProduct")
+	public DeleteProductToCartResponse deleteProductToCart(@RequestBody DeleteProductToCartRequest cartReq) {
+		return service.removeProductFromCart(cartReq);
 	}
 	
 	@DeleteMapping("/{cartId}")
