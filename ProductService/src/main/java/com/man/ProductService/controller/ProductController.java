@@ -2,7 +2,6 @@ package com.man.ProductService.controller;
 
 import java.util.List;
 
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +16,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.man.ProductService.Entity.Product;
 import com.man.ProductService.exception.ProductNotFoundException;
+import com.man.ProductService.request.DecreaseStockRequest;
 import com.man.ProductService.request.ProductCreateRequest;
 import com.man.ProductService.request.ProductDeleteRequest;
 import com.man.ProductService.request.ProductEditRequest;
+import com.man.ProductService.response.DecreaseStockResponse;
 import com.man.ProductService.response.ListProductResponse;
 import com.man.ProductService.response.ProductCreateReponse;
 import com.man.ProductService.response.ProductDeleteResponse;
@@ -32,10 +33,6 @@ public class ProductController {
 	@Autowired
 	private ProductService service;
 	
-	@Autowired
-	private ModelMapper mapper;
-
-
 	@GetMapping("/list")
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 	public ListProductResponse list() {
@@ -63,7 +60,7 @@ public class ProductController {
 	@PreAuthorize("hasAnyRole('ADMIN')")
 	public ResponseEntity<ProductDeleteResponse> delete(@RequestBody ProductDeleteRequest productReq) {
 		try {
-			Product product = service.getById(productReq.getId());
+			Product product = service.findById(productReq.getId());
 			service.delete(product.getId());
 
 			return ResponseEntity.ok(new ProductDeleteResponse(200L, "Product deleted successfuly"));
@@ -77,10 +74,14 @@ public class ProductController {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 	public ProductGetByIdResponse getById(@PathVariable Long id) {
-		Product product = service.getById(id);
 		
-		return mapper.map(product, ProductGetByIdResponse.class);
+		return service.getById(id);
 		
 		
+	}
+	
+	@PutMapping("/decreaseStock")
+	public DecreaseStockResponse decreaseStock(@RequestBody DecreaseStockRequest req) {
+		return service.decreaseStock(req);
 	}
 }

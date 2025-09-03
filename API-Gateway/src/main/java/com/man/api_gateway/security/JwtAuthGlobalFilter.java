@@ -26,7 +26,7 @@ public class JwtAuthGlobalFilter implements GlobalFilter, Ordered {
 //	private final JwtUtil jwtUtil;
 
 	private static final List<String> WHiTELIST = List.of("/auth/login", "/auth/refresh", "/auth/logout",
-			"/actuator/**", "/eureka/**","/users/create","/cart/**"
+			"/actuator/**", "/eureka/**", "/users/create", "/cart/**"
 
 	);
 
@@ -70,7 +70,6 @@ public class JwtAuthGlobalFilter implements GlobalFilter, Ordered {
 //		ServerHttpRequest request = exchange.getRequest().mutate().header("X-Auth-Users", username)
 //				.header("X-Auth-Roles", role).build();
 
-		
 //		return chain.filter(exchange.mutate().request(request).build());
 		return chain.filter(exchange);
 	}

@@ -9,8 +9,10 @@ import org.springframework.stereotype.Service;
 import com.man.ProductService.Entity.Product;
 import com.man.ProductService.Repository.ProductRepository;
 import com.man.ProductService.exception.ProductNotFoundException;
+import com.man.ProductService.request.DecreaseStockRequest;
 import com.man.ProductService.request.ProductCreateRequest;
 import com.man.ProductService.request.ProductEditRequest;
+import com.man.ProductService.response.DecreaseStockResponse;
 import com.man.ProductService.response.ProductCreateReponse;
 import com.man.ProductService.response.ProductEditReponse;
 import com.man.ProductService.response.ProductGetByIdResponse;
@@ -59,7 +61,21 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Product getById(Long id) {
+	public ProductGetByIdResponse getById(Long id) {
+		// TODO Auto-generated method stub
+		Product product = repository.findById(id)
+				.orElseThrow(()->new ProductNotFoundException("Product not found with id "+ id));
+		return mapper.map(product, ProductGetByIdResponse.class);
+	}
+
+	@Override
+	public List<Product> getByName(String name) {
+		// TODO Auto-generated method stub
+		return repository.findByName(name);
+	}
+	
+	@Override
+	public Product findById(Long id) {
 		// TODO Auto-generated method stub
 		Product product = repository.findById(id)
 				.orElseThrow(()->new ProductNotFoundException("Product not found with id "+ id));
@@ -67,9 +83,14 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public List<Product> getByName(String name) {
+	public DecreaseStockResponse decreaseStock(DecreaseStockRequest req) {
 		// TODO Auto-generated method stub
-		return repository.findByName(name);
+		Product product = repository.findById(req.getId())
+				.orElseThrow(()->new ProductNotFoundException("Product not found with id "+ req.getId()));
+		
+		product.setQuanity(product.getPrice()-req.getQuanity());
+		
+		return mapper.map(repository.save(product), DecreaseStockResponse.class);
 	}
 
 }

@@ -17,6 +17,7 @@ import com.man.CartService.request.DeleteProductToCartRequest;
 import com.man.CartService.response.AddProductToCartResponse;
 import com.man.CartService.response.CartCreateResponse;
 import com.man.CartService.response.DeleteProductToCartResponse;
+import com.man.CartService.response.GetByIdResponse;
 import com.man.CartService.service.CartService;
 
 @RestController
@@ -48,5 +49,10 @@ public class CartController {
 	@GetMapping("/user/{userId}")
 	public List<Cart> getByUserId(@PathVariable("userId") Long userId){
 		return service.getCartByUserId(userId);
+	}
+	
+	@GetMapping("/{id}")
+	public GetByIdResponse getById(@PathVariable("id") Long id){
+		return service.getById(id);
 	}
 }

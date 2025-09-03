@@ -20,6 +20,7 @@ import com.man.CartService.response.AddProductToCartResponse;
 import com.man.CartService.response.CartCreateResponse;
 import com.man.CartService.response.CartItemResponse;
 import com.man.CartService.response.DeleteProductToCartResponse;
+import com.man.CartService.response.GetByIdResponse;
 import com.man.CartService.service.CartService;
 
 import jakarta.transaction.Transactional;
@@ -156,6 +157,14 @@ public class CartServiceImpl implements CartService {
 	public List<Cart> getCartByUserId(Long userId) {
 		// TODO Auto-generated method stub
 		return repository.findByUserId(userId);
+	}
+
+	@Override
+	public GetByIdResponse getById(Long id) {
+		Cart cart = repository.findById(id).orElseThrow(()-> new RuntimeException("Cart Not Found"));
+
+		
+		return mapper.map(cart, GetByIdResponse.class);
 	}
 
 }

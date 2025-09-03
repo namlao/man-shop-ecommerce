@@ -3,13 +3,14 @@ package com.man.OrderService.response;
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
-public class ProductGetByIdResponse {
+@Setter
+public class DecreaseStockResponse {
 	private Long id;
+
 	private String name;
-	private Long quanity;
+
 	private Long price;
 
+	private Long quanity;
 }
-

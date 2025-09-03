@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,6 +16,7 @@ import com.man.OrderService.exception.OrderNotFoundException;
 import com.man.OrderService.request.CreateOrderRequest;
 import com.man.OrderService.request.EditOrderRequest;
 import com.man.OrderService.request.OrderDeleteRequest;
+import com.man.OrderService.response.CheckoutResponse;
 import com.man.OrderService.response.CreateOrderResponse;
 import com.man.OrderService.response.EditOrderResponse;
 import com.man.OrderService.response.GetListResponse;
@@ -55,4 +57,11 @@ public class OrderController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new OrderDeleteResponse(404L, e.getMessage()));
 		}
 	}
+	
+	@GetMapping("/checkout/{cartId}")
+	public CheckoutResponse checkout(@PathVariable("cartId") Long cartId) {
+		return service.checkout(cartId);
+	}
+	
+
 }
