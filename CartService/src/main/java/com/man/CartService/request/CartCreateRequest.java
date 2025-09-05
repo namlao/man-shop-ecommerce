@@ -10,7 +10,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class CartCreateRequest {
-	private Long id;
 	private Long userId;
 	private List<CartItemRequest> items;
 }

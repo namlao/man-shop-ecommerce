@@ -43,7 +43,8 @@ public class CartServiceImpl implements CartService {
 	private ModelMapper mapper;
 
 	@Override
-	public CartCreateResponse createCart(CartCreateRequest cartReq) {
+	public CartCreateResponse createCart(CartCreateRequest cartReq, String username) {
+		cartReq.setUserId(userClient.getByUsername(username).getId());
 		Cart cart = mapper.map(cartReq, Cart.class);
 
 		List<CartItem> cartItems = cartReq.getItems().stream().map(itemReq -> {
@@ -75,8 +76,10 @@ public class CartServiceImpl implements CartService {
 		Cart cart = repository.findById(itemReqs.getId()).orElseThrow(() -> new RuntimeException("Cart not found"));
 
 		List<CartItem> cartItems = itemReqs.getItems().stream().map(item -> {
+			
 			Long subTotal = productClient.getById(item.getProductId()).getPrice() * item.getQuantity();
 			item.setSubTotal(subTotal);
+			
 			return mapper.map(item, CartItem.class);
 		}).toList();
 
@@ -89,7 +92,7 @@ public class CartServiceImpl implements CartService {
 				System.out.println("Tìm thấy productId: Quanity cũ: "+ oldCartItem.getQuantity() +" Quanity req: "+item.getQuantity());
 				Long newQuantity = oldCartItem.getQuantity() + item.getQuantity();
 				oldCartItem.setQuantity(newQuantity);
-				
+
 				System.out.println("Tìm thấy productId: Giá cũ: "+ oldCartItem.getSubTotal() +"Giá req: "+item.getSubTotal());
 				Long newSubTotal = oldCartItem.getSubTotal() + item.getSubTotal();
 				oldCartItem.setSubTotal(newSubTotal);

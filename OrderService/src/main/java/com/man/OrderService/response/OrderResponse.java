@@ -1,4 +1,4 @@
-package com.man.OrderService.enity;
+package com.man.OrderService.response;
 
 import java.util.List;
 
@@ -9,15 +9,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-public class Cart {
+@NoArgsConstructor
+public class OrderResponse {
 	private Long id;
-	
 	private Long userId;
-	
-	
-	private List<CartItem> items;
-	
-	private Long total;
+	private Long totalAmount;
+	private String status;
+	private List<OrderDetailResponse> items;
 }

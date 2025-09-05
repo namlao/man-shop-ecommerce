@@ -1,7 +1,5 @@
 package com.man.OrderService.enity;
 
-import java.util.List;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,13 +9,14 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Cart {
+public class CartItem {
 	private Long id;
+
+	private Cart cart;
+
+	private Long productId;
 	
-	private Long userId;
+	private Long quantity;
 	
-	
-	private List<CartItem> items;
-	
-	private Long total;
+	private Long subTotal;
 }

@@ -9,7 +9,10 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderDeleteResponse {
-	private Long code;
-	private String message;
+public class OrderDetailResponse {
+	private Long productId;
+    private String productName;
+    private Long quantity;
+    private Long price;
+    private Long subTotal;
 }
