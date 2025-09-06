@@ -1,3 +1,6 @@
 /.metadata/
 /.mvn/
 /.setting/
+/.git/
+/config-repo/
+/.project

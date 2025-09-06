@@ -17,7 +17,7 @@ import io.jsonwebtoken.security.Keys;
 public class JwtValidator {
 	private final Key key;
 
-	public JwtValidator(@Value("${security.jwt.secret}") String secret) {
+	public JwtValidator(@Value("${security.jwt.secret:default-secret}") String secret) {
 		this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 	}
 
