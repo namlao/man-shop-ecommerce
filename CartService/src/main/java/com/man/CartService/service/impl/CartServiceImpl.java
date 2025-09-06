@@ -5,6 +5,8 @@ import java.util.stream.Collectors;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.man.CartService.client.ProductClient;
@@ -43,8 +45,10 @@ public class CartServiceImpl implements CartService {
 	private ModelMapper mapper;
 
 	@Override
-	public CartCreateResponse createCart(CartCreateRequest cartReq, String username) {
-		cartReq.setUserId(userClient.getByUsername(username).getId());
+	public CartCreateResponse createCart(CartCreateRequest cartReq) {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		System.out.println(authentication.getName());
+		cartReq.setUserId(userClient.getByUsername(authentication.getName()).getId());
 		Cart cart = mapper.map(cartReq, Cart.class);
 
 		List<CartItem> cartItems = cartReq.getItems().stream().map(itemReq -> {
@@ -89,17 +93,17 @@ public class CartServiceImpl implements CartService {
 			CartItem oldCartItem = itemCartRepository.findByCartIdAndProductId(cart.getId(), item.getProductId())
 					.orElse(null);
 			if (oldCartItem != null) {
-				System.out.println("Tìm thấy productId: Quanity cũ: "+ oldCartItem.getQuantity() +" Quanity req: "+item.getQuantity());
+//				System.out.println("Tìm thấy productId: Quanity cũ: "+ oldCartItem.getQuantity() +" Quanity req: "+item.getQuantity());
 				Long newQuantity = oldCartItem.getQuantity() + item.getQuantity();
 				oldCartItem.setQuantity(newQuantity);
 
-				System.out.println("Tìm thấy productId: Giá cũ: "+ oldCartItem.getSubTotal() +"Giá req: "+item.getSubTotal());
+//				System.out.println("Tìm thấy productId: Giá cũ: "+ oldCartItem.getSubTotal() +"Giá req: "+item.getSubTotal());
 				Long newSubTotal = oldCartItem.getSubTotal() + item.getSubTotal();
 				oldCartItem.setSubTotal(newSubTotal);
 				
 				total += item.getQuantity() * productClient.getById(oldCartItem.getProductId()).getPrice();
 			}else {
-				System.out.println("không có productId");
+//				System.out.println("không có productId");
 				CartItem newItem = mapper.map(item, CartItem.class);
 				Long subNewTotal = productClient.getById(newItem.getProductId()).getPrice() * newItem.getQuantity();
 	            newItem.setSubTotal(subNewTotal);

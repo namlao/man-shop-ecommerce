@@ -10,11 +10,22 @@ import com.man.OrderService.request.DecreaseStockRequest;
 import com.man.OrderService.response.DecreaseStockResponse;
 import com.man.OrderService.response.ProductGetByIdResponse;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 @FeignClient(name = "ProductService")
 public interface ProductClient {
 	@GetMapping("/{id}")
+	@CircuitBreaker(name = "productService", fallbackMethod = "fallbackGetById")
 	ProductGetByIdResponse getById(@PathVariable("id") Long id);
+	default ProductGetByIdResponse fallbackGetById(Long id,Throwable throwable) {
+		return new ProductGetByIdResponse(id,"Unknown Product",0L,0L);
+	}
+	
 
 	@PutMapping("/decreaseStock")
+	@CircuitBreaker(name = "productService", fallbackMethod = "fallbackDecreaseStock")
 	DecreaseStockResponse decreaseStock(@RequestBody DecreaseStockRequest req);
+	default DecreaseStockResponse fallbackGetById(DecreaseStockRequest req,Throwable throwable) {
+		return new DecreaseStockResponse(req.getId(),"Unknow Product",0L,req.getQuanity());
+	}
 }

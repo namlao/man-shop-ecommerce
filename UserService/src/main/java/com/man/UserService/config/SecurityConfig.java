@@ -22,7 +22,9 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
-		httpSecurity.csrf().disable().authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
+		httpSecurity.csrf().disable().authorizeHttpRequests(auth -> auth
+				.requestMatchers("/actuator/**").permitAll()
+				.anyRequest().permitAll())
 //		.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
 				.headers(headers -> headers.frameOptions(frame -> frame.disable()))
 				.logout(logout -> logout.disable());

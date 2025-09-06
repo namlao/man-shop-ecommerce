@@ -12,7 +12,7 @@ import com.man.CartService.response.DeleteProductToCartResponse;
 import com.man.CartService.response.GetByIdResponse;
 
 public interface CartService {
-	CartCreateResponse createCart(CartCreateRequest cart,String username);
+	CartCreateResponse createCart(CartCreateRequest cart);
 
 	AddProductToCartResponse addProductToCart(AddProductToCartRequest item);
 

@@ -29,8 +29,7 @@ public class CartController {
 	
 	@PostMapping("/create")
 	public CartCreateResponse create(@RequestBody CartCreateRequest cartReq) {
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		return service.createCart(cartReq,authentication.getName());
+		return service.createCart(cartReq);
 	}
 	
 	@PostMapping("/addProduct")

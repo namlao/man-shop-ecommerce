@@ -21,7 +21,9 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
-		security.csrf().disable().authorizeHttpRequests(auth -> auth.anyRequest().authenticated())
+		security.csrf().disable().authorizeHttpRequests(auth -> auth
+				.requestMatchers("/actuator/**").permitAll()
+				.anyRequest().authenticated())
 				.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
 				.headers(headers -> headers.frameOptions(frame -> frame.disable())).logout(logout -> logout.disable());
 //		.addFilterBefore(new RoleHeaderFilter(), UsernamePasswordAuthenticationFilter.class);
