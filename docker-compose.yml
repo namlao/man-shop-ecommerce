@@ -1,11 +1,12 @@
 version: '3.8'
 services:
-  # Eureka Server
   discoveryserver:
     build: ./DiscoveryServer
     container_name: discoveryserver
     ports:
       - "8761:8761"
+    networks:
+      - spring-net
     healthcheck:
       test: ["CMD-SHELL", "curl -f http://localhost:8761/actuator/health || exit 1"]
       interval: 15s
@@ -13,12 +14,13 @@ services:
       retries: 10
       start_period: 40s
 
-  # Config Server
   configserver:
     build: ./ConfigServer
     container_name: configserver
     ports:
       - "8888:8888"
+    networks:
+      - spring-net
     depends_on:
       discoveryserver:
         condition: service_healthy
@@ -29,7 +31,6 @@ services:
       retries: 10
       start_period: 40s
 
-  # Auth Service
   auth-service:
     build: ./auth-service
     container_name: auth-service
@@ -37,15 +38,14 @@ services:
       - "8081:8081"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - spring-net
     depends_on:
       configserver:
         condition: service_healthy
       discoveryserver:
         condition: service_healthy
-      
-    
 
-  # Product Service
   product-service:
     build: ./ProductService
     container_name: product-service
@@ -53,13 +53,14 @@ services:
       - "8082:8082"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - spring-net
     depends_on:
       configserver:
         condition: service_healthy
       discoveryserver:
         condition: service_healthy
 
-  # Cart Service
   cart-service:
     build: ./CartService
     container_name: cart-service
@@ -67,13 +68,14 @@ services:
       - "8085:8085"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - spring-net
     depends_on:
       configserver:
         condition: service_healthy
       discoveryserver:
         condition: service_healthy
 
-  # Order Service
   order-service:
     build: ./OrderService
     container_name: order-service
@@ -81,13 +83,14 @@ services:
       - "8083:8083"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - spring-net
     depends_on:
       configserver:
         condition: service_healthy
       discoveryserver:
         condition: service_healthy
 
-  # User Service
   user-service:
     build: ./UserService
     container_name: user-service
@@ -95,13 +98,14 @@ services:
       - "8084:8084"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - spring-net
     depends_on:
       configserver:
         condition: service_healthy
       discoveryserver:
         condition: service_healthy
 
-  # API Gateway
   api-gateway:
     build: ./API-Gateway
     container_name: api-gateway
@@ -109,18 +113,21 @@ services:
       - "8080:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - spring-net
     depends_on:
       configserver:
         condition: service_healthy
       discoveryserver:
         condition: service_healthy
 
-  # Prometheus
   prometheus:
     image: prom/prometheus
     container_name: prometheus
     ports:
       - "9090:9090"
+    networks:
+      - spring-net
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml
     depends_on:
@@ -131,11 +138,16 @@ services:
       - user-service
       - api-gateway
 
-  # Grafana
   grafana:
     image: grafana/grafana
     container_name: grafana
     ports:
       - "3000:3000"
+    networks:
+      - spring-net
     depends_on:
       - prometheus
+
+networks:
+  spring-net:
+    driver: bridge
