@@ -10,7 +10,7 @@ import com.man.CartService.response.UserGetByIdResponse;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
-@FeignClient(name = "ProductService",configuration = FeignAuthInterceptor.class)
+@FeignClient(name = "product-service",configuration = FeignAuthInterceptor.class)
 public interface ProductClient {
 	
 	@GetMapping("/{id}")

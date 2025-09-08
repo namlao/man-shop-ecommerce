@@ -11,7 +11,7 @@ import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 
 
-@FeignClient(name = "UserService")
+@FeignClient(name = "user-service")
 public interface UserClient {
 	@GetMapping("/u/{username}")
 	@CircuitBreaker(name = "userService", fallbackMethod = "fallbackGetByUsername")

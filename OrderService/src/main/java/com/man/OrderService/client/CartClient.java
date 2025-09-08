@@ -14,7 +14,7 @@ import com.man.OrderService.response.GetByIdResponse;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
 
-@FeignClient(name = "CartService")
+@FeignClient(name = "cart-server")
 public interface CartClient {
 	@GetMapping("/{id}")
 	@CircuitBreaker(name = "cartService",fallbackMethod = "fallbackGetById")
