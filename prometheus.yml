@@ -6,12 +6,12 @@ scrape_configs:
     metrics_path: '/actuator/prometheus'
     static_configs:
       - targets:
-          # - 'auth-service:8081'
+          - 'auth-service:8081'
           - 'product-service:8082'
-          # - 'cart-service:8085'
-          # - 'order-service:8083'
-          # - 'user-service:8084'
-          # - 'api-gateway:8080'
+          - 'cart-service:8085'
+          - 'order-service:8083'
+          - 'user-service:8084'
+          - 'api-gateway:8080'
 
           
   # - job_name: 'auth-service'

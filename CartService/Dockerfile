@@ -19,38 +19,71 @@
 # =========================
 # Stage 1: Build JAR
 # =========================
+# FROM maven:3.9.6-eclipse-temurin-17 AS builder
+# WORKDIR /app
+
+# # Copy pom.xml và preload dependencies để tận dụng cache
+# COPY pom.xml .
+# RUN mvn dependency:go-offline -B
+
+# # Copy source code và build
+# COPY src ./src
+# RUN mvn clean package -DskipTests
+
+# # =========================
+# # Stage 2: Runtime
+# # =========================
+# FROM eclipse-temurin:17-jre-jammy AS runtime
+# WORKDIR /app
+
+# # Copy file jar từ stage builder
+# COPY --from=builder /app/target/*.jar app.jar
+
+# # Tạo user non-root (bảo mật tốt hơn)
+# RUN useradd -ms /bin/bash cartservice
+# USER cartservice
+
+# # Cổng mặc định, có thể override bằng docker-compose
+# EXPOSE 8085
+
+# # Healthcheck (tùy chỉnh theo service)
+# # - Mặc định check actuator/health
+# # - Có thể override ở docker-compose nếu cổng khác
+# # HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=5 \
+# CMD curl -f http://localhost:8085/actuator/health || exit 1
+
+# # Chạy app
+# ENTRYPOINT ["java","-jar","app.jar"]
+
+# =========================
+# Stage 1: Build JAR
+# =========================
 FROM maven:3.9.6-eclipse-temurin-17 AS builder
 WORKDIR /app
 
-# Copy pom.xml và preload dependencies để tận dụng cache
+# Copy pom.xml và preload dependencies (tận dụng cache)
 COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
-# Copy source code và build
+# Copy source code và build JAR
 COPY src ./src
 RUN mvn clean package -DskipTests
 
 # =========================
-# Stage 2: Runtime
+# Stage 2: Runtime (siêu nhẹ với Alpine)
 # =========================
-FROM eclipse-temurin:17-jre-jammy AS runtime
+FROM eclipse-temurin:17-jre-alpine AS runtime
 WORKDIR /app
 
-# Copy file jar từ stage builder
+# Copy file JAR từ builder
 COPY --from=builder /app/target/*.jar app.jar
 
-# Tạo user non-root (bảo mật tốt hơn)
-RUN useradd -ms /bin/bash cartservice
-USER cartservice
+# Tạo user non-root để tăng bảo mật
+RUN addgroup -S cartservice && adduser -S cartservice -G cartservice
+USER cartservice:cartservice
 
-# Cổng mặc định, có thể override bằng docker-compose
+# Cổng mặc định (override bằng docker-compose nếu khác)
 EXPOSE 8085
 
-# Healthcheck (tùy chỉnh theo service)
-# - Mặc định check actuator/health
-# - Có thể override ở docker-compose nếu cổng khác
-# HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=5 \
-CMD curl -f http://localhost:8085/actuator/health || exit 1
-
-# Chạy app
+# Chạy ứng dụng
 ENTRYPOINT ["java","-jar","app.jar"]
