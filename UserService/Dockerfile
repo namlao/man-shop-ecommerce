@@ -9,17 +9,41 @@
 #ENTRYPOINT exec java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar userservice.jar
 
 
-# Stage 1: Build với Maven
+# =========================
+# Stage 1: Build JAR
+# =========================
 FROM maven:3.9.6-eclipse-temurin-17 AS builder
 WORKDIR /app
+
+# Copy pom.xml và preload dependencies để tận dụng cache
 COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy source code và build
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# Stage 2: Chạy ứng dụng với JDK
-FROM openjdk:17-jdk-slim
+# =========================
+# Stage 2: Runtime
+# =========================
+FROM eclipse-temurin:17-jre-jammy AS runtime
 WORKDIR /app
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
+
+# Copy file jar từ stage builder
 COPY --from=builder /app/target/*.jar app.jar
+
+# Tạo user non-root (bảo mật tốt hơn)
+RUN useradd -ms /bin/bash userservice
+USER userservice
+
+# Cổng mặc định, có thể override bằng docker-compose
 EXPOSE 8084
+
+# Healthcheck (tùy chỉnh theo service)
+# - Mặc định check actuator/health
+# - Có thể override ở docker-compose nếu cổng khác
+# HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=5 \
+CMD curl -f http://localhost:8084/actuator/health || exit 1
+
+# Chạy app
 ENTRYPOINT ["java","-jar","app.jar"]
