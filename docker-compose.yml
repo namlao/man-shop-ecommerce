@@ -158,6 +158,19 @@ services:
       retries: 10
       start_period: 40s
 
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: shopdb
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - spring-net
+
   prometheus:
     image: prom/prometheus
     container_name: prometheus
@@ -188,3 +201,6 @@ services:
 networks:
   spring-net:
     driver: bridge
+
+volumes:
+  mysql-data:
