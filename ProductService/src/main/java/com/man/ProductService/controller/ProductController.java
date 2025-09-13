@@ -3,6 +3,7 @@ package com.man.ProductService.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,12 +28,27 @@ import com.man.ProductService.response.ProductDeleteResponse;
 import com.man.ProductService.response.ProductEditReponse;
 import com.man.ProductService.response.ProductGetByIdResponse;
 import com.man.ProductService.service.ProductService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @RestController
 public class ProductController {
 	@Autowired
 	private ProductService service;
 	
+	// test load balancer
+//	private static final Logger logger = LoggerFactory.getLogger(ProductController.class);
+//	
+//	@Autowired
+//	private Environment environment;
+	
+//	@GetMapping("/testrequest")
+//	public String testrequest() {
+//		logger.info("Handling request in instance running on port: " + environment.getProperty("server.port"));
+//		return "hi";
+//
+//	}
+
 	@GetMapping("/list")
 	@PreAuthorize("hasAnyRole('USER','ADMIN')")
 	public ListProductResponse list() {

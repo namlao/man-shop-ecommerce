@@ -22,7 +22,7 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
 		security.csrf().disable().authorizeHttpRequests(auth -> auth
-				.requestMatchers("/actuator/**").permitAll()
+				.requestMatchers("/actuator/**","/testrequest").permitAll()
 				.anyRequest().authenticated())
 				.addFilterBefore(filter, UsernamePasswordAuthenticationFilter.class)
 				.headers(headers -> headers.frameOptions(frame -> frame.disable())).logout(logout -> logout.disable());
@@ -30,4 +30,13 @@ public class SecurityConfig {
 
 		return security.build();
 	}
+	
+	
+	//Test load balancer
+//	@Bean
+//	public SecurityFilterChain filterChain(HttpSecurity security) throws Exception {
+//		security.csrf().disable().authorizeHttpRequests(auth -> auth.anyRequest().permitAll());
+//
+//		return security.build();
+//	}
 }

@@ -31,15 +31,43 @@ services:
       retries: 10
       start_period: 40s
 
-  auth-service:
-    build: ./auth-service
-    container_name: auth-service
-    ports:
-      - "8081:8081"
+  
+
+
+  product-service:
+    build: ./ProductService
+    # container_name: product-service
+    # ports:
+    #   - "8082:8082"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     networks:
       - spring-net
+    depends_on:
+      configserver:
+        condition: service_healthy
+      discoveryserver:
+        condition: service_healthy
+    deploy:
+      replicas: 2
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8082/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
+
+  auth-service:
+    build: ./auth-service
+    # container_name: auth-service
+    # ports:
+    #   - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - spring-net
+    deploy:
+      replicas: 2
     depends_on:
       configserver:
         condition: service_healthy
@@ -52,35 +80,15 @@ services:
       retries: 10
       start_period: 40s
 
-
-  product-service:
-    build: ./ProductService
-    container_name: product-service
-    ports:
-      - "8082:8082"
-    environment:
-      - SPRING_PROFILES_ACTIVE=dev
-    networks:
-      - spring-net
-    depends_on:
-      configserver:
-        condition: service_healthy
-      discoveryserver:
-        condition: service_healthy
-    healthcheck:
-      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8082/actuator/health || exit 1"]
-      interval: 15s
-      timeout: 10s
-      retries: 10
-      start_period: 40s
-
   cart-service:
     build: ./CartService
-    container_name: cart-service
-    ports:
-      - "8085:8085"
+    # container_name: cart-service
+    # ports:
+    #   - "8085:8085"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
+    deploy:
+      replicas: 2
     networks:
       - spring-net
     depends_on:
@@ -98,8 +106,10 @@ services:
   order-service:
     build: ./OrderService
     container_name: order-service
-    ports:
-      - "8083:8083"
+    # ports:
+    #   - "8083:8083"
+    deploy:
+      replicas: 2
     environment:
       - SPRING_PROFILES_ACTIVE=dev
     networks:
@@ -118,11 +128,13 @@ services:
 
   user-service:
     build: ./UserService
-    container_name: user-service
-    ports:
-      - "8084:8084"
+    # container_name: user-service
+    # ports:
+    #   - "8084:8084"
     environment:
       - SPRING_PROFILES_ACTIVE=dev
+    deploy:
+      replicas: 2
     networks:
       - spring-net
     depends_on:
