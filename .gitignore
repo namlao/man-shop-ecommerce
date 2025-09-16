@@ -4,3 +4,9 @@
 /.git/
 /config-repo/
 /.project
+**/.mvn/
+**/.mvn/
+**/target/
+**/.settings/
+**/.classpath
+**/.project
