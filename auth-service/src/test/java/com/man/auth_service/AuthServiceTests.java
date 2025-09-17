@@ -23,7 +23,6 @@ import com.man.auth_service.entity.RefreshToken;
 import com.man.auth_service.repository.RefreshTokenReposittory;
 import com.man.auth_service.service.RefreshTokenService;
 
-@SpringBootTest
 @ActiveProfiles("test")
 class AuthServiceTests {
 
@@ -83,6 +82,21 @@ class AuthServiceTests {
 
 		verify(refreshTokenReposittory, times(1)).deleteByUserId(userId);
 
+	}
+	
+	@Test
+	void getUserByTokenTest() {
+		RefreshToken refreshToken = new RefreshToken();
+		refreshToken.setId(101L);
+		refreshToken.setUserId(122L);
+		refreshToken.setToken("get-user-by-token-test");
+		refreshToken.setExpiryDate(Instant.now().plusSeconds(3600));
+		
+		when(refreshTokenReposittory.findByToken(refreshToken.getToken())).thenReturn(Optional.of(refreshToken));
+		
+		Long userId = refreshTokenService.getUserByToken(refreshToken.getToken());
+		
+		assertEquals(refreshToken.getUserId(), userId);
 	}
 
 }
