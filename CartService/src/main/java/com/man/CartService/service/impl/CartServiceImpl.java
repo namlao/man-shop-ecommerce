@@ -43,14 +43,25 @@ public class CartServiceImpl implements CartService {
 
 	@Autowired
 	private ModelMapper mapper;
+	
+	
+
+	public CartServiceImpl(CartRepository repository, ItemCartRepository itemCartRepository,
+			ProductClient productClient, UserClient userClient, ModelMapper mapper) {
+		super();
+		this.repository = repository;
+		this.itemCartRepository = itemCartRepository;
+		this.productClient = productClient;
+		this.userClient = userClient;
+		this.mapper = mapper;
+	}
 
 	@Override
 	public CartCreateResponse createCart(CartCreateRequest cartReq) {
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		System.out.println(authentication.getName());
+
 		cartReq.setUserId(userClient.getByUsername(authentication.getName()).getId());
 		Cart cart = mapper.map(cartReq, Cart.class);
-
 		List<CartItem> cartItems = cartReq.getItems().stream().map(itemReq -> {
 			CartItem item = mapper.map(itemReq, CartItem.class);
 			item.setCart(cart);
