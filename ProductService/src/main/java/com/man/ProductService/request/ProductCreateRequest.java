@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 @Getter
 @AllArgsConstructor
-//@NoArgsConstructor
+@NoArgsConstructor
 public class ProductCreateRequest {
 	private String name;
 	private Long price;

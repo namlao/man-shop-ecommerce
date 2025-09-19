@@ -25,6 +25,14 @@ public class ProductServiceImpl implements ProductService {
 
 	@Autowired
 	private ModelMapper mapper;
+	
+	
+
+	public ProductServiceImpl(ProductRepository repository, ModelMapper mapper) {
+		super();
+		this.repository = repository;
+		this.mapper = mapper;
+	}
 
 	@Override
 	public List<Product> getList() {
@@ -88,7 +96,7 @@ public class ProductServiceImpl implements ProductService {
 		Product product = repository.findById(req.getId())
 				.orElseThrow(()->new ProductNotFoundException("Product not found with id "+ req.getId()));
 		
-		product.setQuanity(product.getPrice()-req.getQuanity());
+		product.setQuanity(product.getQuanity()-req.getQuanity());
 		
 		return mapper.map(repository.save(product), DecreaseStockResponse.class);
 	}
