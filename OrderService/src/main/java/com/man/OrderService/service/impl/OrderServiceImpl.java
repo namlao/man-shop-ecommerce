@@ -42,6 +42,20 @@ public class OrderServiceImpl implements OrderService {
 	@Autowired
 	private CartClient cartClient;
 
+	
+	
+
+
+public OrderServiceImpl(OrderRepository orderRepository, ModelMapper mapper, ProductClient productClient,
+			UserClient userClient, CartClient cartClient) {
+		super();
+		this.orderRepository = orderRepository;
+		this.mapper = mapper;
+		this.productClient = productClient;
+		this.userClient = userClient;
+		this.cartClient = cartClient;
+	}
+
 //	@Override
 //	public List<Order> listOrder() {
 //		// TODO Auto-generated method stub
@@ -159,7 +173,10 @@ public class OrderServiceImpl implements OrderService {
 	            itemResp.setProductName(product.getName());
 	            itemResp.setPrice(product.getPrice());
 	            itemResp.setQuantity(cartItem.getQuantity());
-	            itemResp.setSubTotal(product.getPrice() * cartItem.getQuantity());
+	            if(product.getQuanity() >= 0) {
+	            	
+	            	itemResp.setSubTotal(product.getPrice() * cartItem.getQuantity());
+	            }
 
 	            orderItems.add(itemResp);
 	            total += itemResp.getSubTotal();
