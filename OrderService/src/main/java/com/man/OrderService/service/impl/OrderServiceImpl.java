@@ -130,7 +130,7 @@ public class OrderServiceImpl implements OrderService {
 						"OUT_OF_STOCk"));
 			}
 		}
-		cartClient.deleteProductToCart(cartId);
+		cartClient.clearCart(cartId);
 
 		return new CheckoutResponse(cartId, rs, totalPaid);
 	}

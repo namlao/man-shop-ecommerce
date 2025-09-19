@@ -27,9 +27,9 @@ public interface CartClient {
 	
 	@DeleteMapping("/{cartId}")
 	@CircuitBreaker(name = "cartService",fallbackMethod = "fallbackDeleteProductToCart")
-	public void deleteProductToCart(@PathVariable("cartId") Long cartId);
+	public void clearCart(@PathVariable("cartId") Long cartId);
 	
-	default void fallbackDeleteProductToCart(Long cartId,Throwable throwable) {
+	default void fallbackClearCart(Long cartId,Throwable throwable) {
 		System.out.println("Cart id "+ cartId+" Not found");
 	}
 	
