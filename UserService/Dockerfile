@@ -62,7 +62,7 @@ RUN mvn dependency:go-offline -B
 
 # Copy source code và build JAR
 COPY src ./src
-RUN mvn clean package -DskipTests
+RUN mvn clean package
 
 # =========================
 # Stage 2: Runtime (siêu nhẹ với Alpine)

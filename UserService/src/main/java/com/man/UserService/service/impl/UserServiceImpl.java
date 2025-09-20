@@ -31,6 +31,15 @@ public class UserServiceImpl implements UserService {
 	
 	@Autowired
 	private PasswordEncoder encoder;
+	
+	
+
+	public UserServiceImpl(UserRepository repository, ModelMapper mapper, PasswordEncoder encoder) {
+		super();
+		this.repository = repository;
+		this.mapper = mapper;
+		this.encoder = encoder;
+	}
 
 	@Override
 	public List<User> userList() {

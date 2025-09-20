@@ -64,7 +64,7 @@ public class UserController {
 	}
 	
 	@DeleteMapping("/delete")
-	public ResponseEntity<UserDeleteResponse> edit(@RequestBody UserDeleteRequest userReq) {
+	public ResponseEntity<UserDeleteResponse> delete(@RequestBody UserDeleteRequest userReq) {
 		try {
 			User user = service.getById(userReq.getId());
 			service.delete(user.getId());
