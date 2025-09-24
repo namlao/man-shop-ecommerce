@@ -29,7 +29,7 @@ import com.man.auth_service.service.RefreshTokenService;
 import com.man.auth_service.utils.JwtUtil;
 
 @ActiveProfiles("test")
-@ExtendWith(MockitoExtension.class) // chỉ giữ cái này, bỏ openMocks
+@ExtendWith(MockitoExtension.class) 
 class AuthControllerTest {
 
     @Mock
@@ -129,5 +129,3 @@ class AuthControllerTest {
     	verify(client, times(1)).getByUsername("testunit");
     }
 }
-
-
