@@ -1,42 +1,42 @@
 package com.man.auth_service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.man.auth_service.entity.RefreshToken;
-import com.man.auth_service.repository.RefreshTokenReposittory;
-import com.man.auth_service.response.UserGetByIdResponse;
+import static com.github.tomakehurst.wiremock.client.WireMock.get;
+import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
+import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import java.time.Instant;
+import java.util.Optional;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
-import java.time.Instant;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit5.WireMockExtension;
-import static com.github.tomakehurst.wiremock.client.WireMock.*;
-import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import com.man.auth_service.entity.RefreshToken;
+import com.man.auth_service.repository.RefreshTokenReposittory;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -58,7 +58,9 @@ class AuthFlowTest {
 		registry.add("user-service.url", wiremock::baseUrl);
 	}
 
+
 	@Test
+	@DirtiesContext
 	void loginFlowITest() throws Exception {
 		String encoded = new BCryptPasswordEncoder().encode("123456");
 		// Stub API user-service
@@ -81,7 +83,7 @@ class AuthFlowTest {
 				""")).andExpect(status().isOk()).andReturn();
 
 		String responseJson = result.getResponse().getContentAsString();
-		System.out.println("Login response: " + responseJson);
+//		System.out.println("Login response: " + responseJson);
 
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode node = mapper.readTree(responseJson);
@@ -100,6 +102,7 @@ class AuthFlowTest {
 
 	//
 	@Test
+	@DirtiesContext
 	void refreshFlowTest() throws Exception {
 		RefreshToken refreshToken = new RefreshToken();
 		refreshToken.setToken("7fe09b98-1242-4193-8e26-70efeb8399e5");
@@ -142,6 +145,7 @@ class AuthFlowTest {
 	}
 
 	@Test
+	@DirtiesContext
 	void logoutFlowTest() throws Exception {
 		RefreshToken refreshToken = new RefreshToken();
 		refreshToken.setToken("7fe09b98-1242-4193-8e26-70efeb8399e5");

@@ -9,7 +9,7 @@ import com.man.CartService.response.UserGetByUsernameResponse;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
-@FeignClient(name="user-service")
+@FeignClient(name="user-service",url = "${user-service.url}")
 public interface UserClient {
 	
 	@GetMapping("/i/{id}")

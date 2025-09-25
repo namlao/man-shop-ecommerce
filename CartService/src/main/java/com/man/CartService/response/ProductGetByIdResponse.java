@@ -2,11 +2,13 @@ package com.man.CartService.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class ProductGetByIdResponse {
 	private Long id;
 	
@@ -14,6 +16,6 @@ public class ProductGetByIdResponse {
 	
 	private Long price;
 	
-	private int quanity;
+	private Integer quanity;
 
 }
