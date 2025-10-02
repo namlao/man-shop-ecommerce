@@ -18,6 +18,7 @@ public interface ProductClient {
 	@CircuitBreaker(name = "productService", fallbackMethod = "fallbackGetById")
 	ProductGetByIdResponse getById(@PathVariable("id") Long id);
 	default ProductGetByIdResponse fallbackGetById(Long id,Throwable throwable) {
+		System.out.println("Fallback for productId=" + id + ", cause=" + throwable.getMessage());
 		return new ProductGetByIdResponse(id,"Unknown Product",0L,0L);
 	}
 	
@@ -25,7 +26,7 @@ public interface ProductClient {
 	@PutMapping("/decreaseStock")
 	@CircuitBreaker(name = "productService", fallbackMethod = "fallbackDecreaseStock")
 	DecreaseStockResponse decreaseStock(@RequestBody DecreaseStockRequest req);
-	default DecreaseStockResponse fallbackGetById(DecreaseStockRequest req,Throwable throwable) {
-		return new DecreaseStockResponse(req.getId(),"Unknow Product",0L,req.getQuanity());
+	default DecreaseStockResponse fallbackDecreaseStock(DecreaseStockRequest req,Throwable throwable) {
+		return new DecreaseStockResponse(req.getId(),"Unknown Product",0L,req.getQuanity());
 	}
 }

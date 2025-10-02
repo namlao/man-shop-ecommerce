@@ -9,7 +9,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.Instant;
-import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;

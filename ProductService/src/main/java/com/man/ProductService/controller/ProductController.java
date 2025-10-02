@@ -3,7 +3,6 @@ package com.man.ProductService.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,8 +27,6 @@ import com.man.ProductService.response.ProductDeleteResponse;
 import com.man.ProductService.response.ProductEditReponse;
 import com.man.ProductService.response.ProductGetByIdResponse;
 import com.man.ProductService.service.ProductService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @RestController
 public class ProductController {

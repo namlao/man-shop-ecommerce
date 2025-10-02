@@ -132,7 +132,7 @@ public OrderServiceImpl(OrderRepository orderRepository, ModelMapper mapper, Pro
 
 			Long available = productDb.getQuanity();
 			Long requested = item.getQuantity();
-
+			
 			if (requested <= available) {
 
 				productClient.decreaseStock(new DecreaseStockRequest(item.getProductId(), requested));

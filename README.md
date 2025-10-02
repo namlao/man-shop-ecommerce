@@ -49,7 +49,7 @@ Mục tiêu: học tập và áp dụng **Spring Boot, Microservices, DevOps, Ob
 - CI/CD pipeline (GitHub Actions/Jenkins – TODO)  
 
 ### Milestone 6+: Testing & Advanced (IN PROGRESS)
-- Integration & End-to-End Tests  (Cart flow IT: DONE,Auth flow IT: DONE,Order flow IT: IN PROGRESS)
+- Integration & End-to-End Tests  (DONE)
 - Payment Service (mock)  
 - Kafka Integration (event-driven flow)  
 - Kubernetes Deployment  

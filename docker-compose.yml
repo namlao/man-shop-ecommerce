@@ -5,8 +5,8 @@ services:
     container_name: discoveryserver
     ports:
       - "8761:8761"
-    # networks:
-    #   - spring-net
+    networks:
+      - spring-net
     healthcheck:
       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8761/actuator/health || exit 1"]
       interval: 15s
@@ -19,8 +19,8 @@ services:
     container_name: configserver
     ports:
       - "8888:8888"
-    # networks:
-    #   - spring-net
+    networks:
+      - spring-net
     depends_on:
       discoveryserver:
         condition: service_healthy
@@ -34,188 +34,188 @@ services:
   
 
 
-#   product-service:
-#     build: ./ProductService
-#     # container_name: product-service
-#     # ports:
-#     #   - "8082:8082"
-#     environment:
-#       - SPRING_PROFILES_ACTIVE=dev
-#     networks:
-#       - spring-net
-#     depends_on:
-#       configserver:
-#         condition: service_healthy
-#       discoveryserver:
-#         condition: service_healthy
-#     deploy:
-#       replicas: 2
-#     healthcheck:
-#       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8082/actuator/health || exit 1"]
-#       interval: 15s
-#       timeout: 10s
-#       retries: 10
-#       start_period: 40s
+  product-service:
+    build: ./ProductService
+    # container_name: product-service
+    # ports:
+    #   - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - spring-net
+    depends_on:
+      configserver:
+        condition: service_healthy
+      discoveryserver:
+        condition: service_healthy
+    deploy:
+      replicas: 2
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8082/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
 
-#   auth-service:
-#     build: ./auth-service
-#     # container_name: auth-service
-#     # ports:
-#     #   - "8081:8081"
-#     environment:
-#       - SPRING_PROFILES_ACTIVE=dev
-#     networks:
-#       - spring-net
-#     deploy:
-#       replicas: 2
-#     depends_on:
-#       configserver:
-#         condition: service_healthy
-#       discoveryserver:
-#         condition: service_healthy
-#     healthcheck:
-#       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8081/actuator/health || exit 1"]
-#       interval: 15s
-#       timeout: 10s
-#       retries: 10
-#       start_period: 40s
+  auth-service:
+    build: ./auth-service
+    # container_name: auth-service
+    # ports:
+    #   - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - spring-net
+    deploy:
+      replicas: 2
+    depends_on:
+      configserver:
+        condition: service_healthy
+      discoveryserver:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8081/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
 
-#   cart-service:
-#     build: ./CartService
-#     # container_name: cart-service
-#     # ports:
-#     #   - "8085:8085"
-#     environment:
-#       - SPRING_PROFILES_ACTIVE=dev
-#     deploy:
-#       replicas: 2
-#     networks:
-#       - spring-net
-#     depends_on:
-#       configserver:
-#         condition: service_healthy
-#       discoveryserver:
-#         condition: service_healthy
-#     healthcheck:
-#       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8085/actuator/health || exit 1"]
-#       interval: 15s
-#       timeout: 10s
-#       retries: 10
-#       start_period: 40s
+  cart-service:
+    build: ./CartService
+    # container_name: cart-service
+    # ports:
+    #   - "8085:8085"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    deploy:
+      replicas: 2
+    networks:
+      - spring-net
+    depends_on:
+      configserver:
+        condition: service_healthy
+      discoveryserver:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8085/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
 
-#   order-service:
-#     build: ./OrderService
-#     # container_name: order-service
-#     # ports:
-#     #   - "8083:8083"
-#     deploy:
-#       replicas: 2
-#     environment:
-#       - SPRING_PROFILES_ACTIVE=dev
-#     networks:
-#       - spring-net
-#     depends_on:
-#       configserver:
-#         condition: service_healthy
-#       discoveryserver:
-#         condition: service_healthy
-#     healthcheck:
-#       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8083/actuator/health || exit 1"]
-#       interval: 15s
-#       timeout: 10s
-#       retries: 10
-#       start_period: 40s
+  order-service:
+    build: ./OrderService
+    # container_name: order-service
+    # ports:
+    #   - "8083:8083"
+    deploy:
+      replicas: 2
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - spring-net
+    depends_on:
+      configserver:
+        condition: service_healthy
+      discoveryserver:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8083/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
 
-#   user-service:
-#     build: ./UserService
-#     # container_name: user-service
-#     # ports:
-#     #   - "8084:8084"
-#     environment:
-#       - SPRING_PROFILES_ACTIVE=dev
-#     deploy:
-#       replicas: 2
-#     networks:
-#       - spring-net
-#     depends_on:
-#       configserver:
-#         condition: service_healthy
-#       discoveryserver:
-#         condition: service_healthy
-#     healthcheck:
-#       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8084/actuator/health || exit 1"]
-#       interval: 15s
-#       timeout: 10s
-#       retries: 10
-#       start_period: 40s
+  user-service:
+    build: ./UserService
+    # container_name: user-service
+    # ports:
+    #   - "8084:8084"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    deploy:
+      replicas: 2
+    networks:
+      - spring-net
+    depends_on:
+      configserver:
+        condition: service_healthy
+      discoveryserver:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8084/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
 
-#   api-gateway:
-#     build: ./API-Gateway
-#     # container_name: api-gateway
-#     # ports:
-#     #   - "8080:8080"
-#     environment:
-#       - SPRING_PROFILES_ACTIVE=dev
-#     networks:
-#       - spring-net
-#     depends_on:
-#       configserver:
-#         condition: service_healthy
-#       discoveryserver:
-#         condition: service_healthy
-#     deploy:
-#       replicas: 2
-#     healthcheck:
-#       test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1"]
-#       interval: 15s
-#       timeout: 10s
-#       retries: 10
-#       start_period: 40s
+  api-gateway:
+    build: ./API-Gateway
+    # container_name: api-gateway
+    # ports:
+    #   - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=dev
+    networks:
+      - spring-net
+    depends_on:
+      configserver:
+        condition: service_healthy
+      discoveryserver:
+        condition: service_healthy
+    deploy:
+      replicas: 2
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:8080/actuator/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 40s
 
-#   mysql:
-#     image: mysql:8
-#     container_name: mysql
-#     ports:
-#       - "3307:3306"
-#     environment:
-#       MYSQL_ROOT_PASSWORD: root
-#       MYSQL_DATABASE: shopdb
-#     volumes:
-#       - mysql-data:/var/lib/mysql
-#     networks:
-#       - spring-net
+  mysql:
+    image: mysql:8
+    container_name: mysql
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: shopdb
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - spring-net
 
-#   prometheus:
-#     image: prom/prometheus
-#     container_name: prometheus
-#     ports:
-#       - "9090:9090"
-#     networks:
-#       - spring-net
-#     volumes:
-#       - ./prometheus.yml:/etc/prometheus/prometheus.yml
-#     depends_on:
-#       - product-service
-#       - auth-service
-#       - cart-service
-#       - order-service
-#       - user-service
-#       - api-gateway
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    networks:
+      - spring-net
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    depends_on:
+      - product-service
+      - auth-service
+      - cart-service
+      - order-service
+      - user-service
+      - api-gateway
 
-#   grafana:
-#     image: grafana/grafana
-#     container_name: grafana
-#     ports:
-#       - "3000:3000"
-#     networks:
-#       - spring-net
-#     depends_on:
-#       - prometheus
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - spring-net
+    depends_on:
+      - prometheus
 
-# networks:
-#   spring-net:
-#     driver: bridge
+networks:
+  spring-net:
+    driver: bridge
 
-# volumes:
-#   mysql-data:
-#     driver: local
+volumes:
+  mysql-data:
+    driver: local

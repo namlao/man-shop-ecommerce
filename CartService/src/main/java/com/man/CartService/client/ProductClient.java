@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 
 import com.man.CartService.config.FeignAuthInterceptor;
 import com.man.CartService.response.ProductGetByIdResponse;
-import com.man.CartService.response.UserGetByIdResponse;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
