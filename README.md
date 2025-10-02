@@ -79,3 +79,29 @@ docker compose up -d
 # - Eureka Dashboard: http://localhost:8761
 # - Prometheus: http://localhost:9090
 # - Grafana: http://localhost:3000
+```
+
+## Cấu trúc thư mục
+```bash
+├── product-service/
+├── order-service/
+├── user-service/
+├── auth-service/
+├── cart-service/
+├── api-gateway/
+├── config-server/
+├── eureka-server/
+├── docker-compose.yml
+└── README.md
+```
+
+## ✨Hướng phát triển tiếp theo
+- Viết thêm Integration & E2E Tests.
+- Hoàn thiện CI/CD pipeline.
+- Triển khai trên Kubernetes với Helm.
+- Thêm Kafka cho Order → Notification → Analytics.
+
+## 👤 Tác giả
+- Mai Anh Nam
+- GitHub: github.com/namlao
+- Email: maianhnamdev@gmail.com
