@@ -81,6 +81,8 @@ docker compose up -d
 # - Grafana: http://localhost:3000
 ```
 
+---
+
 ## Cấu trúc thư mục
 ```bash
 ├── product-service/
@@ -95,11 +97,15 @@ docker compose up -d
 └── README.md
 ```
 
+---
+
 ## ✨Hướng phát triển tiếp theo
 - Viết thêm Integration & E2E Tests.
 - Hoàn thiện CI/CD pipeline.
 - Triển khai trên Kubernetes với Helm.
 - Thêm Kafka cho Order → Notification → Analytics.
+
+---
 
 ## 👤 Tác giả
 - Mai Anh Nam
