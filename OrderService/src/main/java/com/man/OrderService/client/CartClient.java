@@ -13,8 +13,7 @@ import com.man.OrderService.response.GetByIdResponse;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
-
-@FeignClient(name = "cart-server")
+@FeignClient(name = "cart-server",url = "${cart-service.url}")
 public interface CartClient {
 	@GetMapping("/{id}")
 	@CircuitBreaker(name = "cartService",fallbackMethod = "fallbackGetById")
@@ -26,7 +25,7 @@ public interface CartClient {
 	
 	
 	@DeleteMapping("/{cartId}")
-	@CircuitBreaker(name = "cartService",fallbackMethod = "fallbackDeleteProductToCart")
+	@CircuitBreaker(name = "cartService",fallbackMethod = "fallbackClearCart")
 	public void clearCart(@PathVariable("cartId") Long cartId);
 	
 	default void fallbackClearCart(Long cartId,Throwable throwable) {

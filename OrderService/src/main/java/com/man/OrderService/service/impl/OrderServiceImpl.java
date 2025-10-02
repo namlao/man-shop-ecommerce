@@ -123,7 +123,6 @@ public OrderServiceImpl(OrderRepository orderRepository, ModelMapper mapper, Pro
 	public CheckoutResponse checkout(Long cartId) {
 		// 1. Lấy cart từ CartService
 		GetByIdResponse cart = cartClient.getById(cartId);
-
 		List<CheckoutItemResponse> rs = new ArrayList<>();
 		Long totalPaid = 0L;
 

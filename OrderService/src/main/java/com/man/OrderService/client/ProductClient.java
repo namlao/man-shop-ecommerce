@@ -12,7 +12,7 @@ import com.man.OrderService.response.ProductGetByIdResponse;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 
-@FeignClient(name = "product-service")
+@FeignClient(name = "product-service",url = "${product-service.url}")
 public interface ProductClient {
 	@GetMapping("/{id}")
 	@CircuitBreaker(name = "productService", fallbackMethod = "fallbackGetById")

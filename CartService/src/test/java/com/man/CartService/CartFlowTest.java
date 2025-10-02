@@ -42,14 +42,11 @@ import com.man.CartService.repository.ItemCartRepository;
 import com.man.CartService.response.CartItemResponse;
 import com.man.CartService.response.UserGetByUsernameResponse;
 
-import jakarta.transaction.Transactional;
-
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, properties = {
 		"user-service.url=http://localhost:${wiremock.server.port}",
 		"product-service.url=http://localhost:${wiremock.server.port}" })
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@Transactional
 public class CartFlowTest {
 	@Autowired
 	private MockMvc mockMvc;
