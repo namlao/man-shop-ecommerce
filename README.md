@@ -49,7 +49,7 @@ Mục tiêu: học tập và áp dụng **Spring Boot, Microservices, DevOps, Ob
 - CI/CD pipeline (GitHub Actions/Jenkins – TODO)  
 
 ### Milestone 6+: Testing & Advanced (IN PROGRESS)
-- Integration & End-to-End Tests  (DONE)
+- Integration & End-to-End Tests  (IN PROGRESS)
 - Payment Service (mock)  
 - Kafka Integration (event-driven flow)  
 - Kubernetes Deployment  
@@ -68,11 +68,8 @@ Mục tiêu: học tập và áp dụng **Spring Boot, Microservices, DevOps, Ob
 git clone https://github.com/namlao/man-shop-ecommerce.git
 cd man-shop-ecommerce
 
-# Build toàn bộ services
-mvn clean install 
-
-# Chạy bằng Docker Compose
-docker compose up -d
+# Build và run 
+docker compose up -d --build
 
 # Các service sẽ chạy tại:
 # - API Gateway: http://localhost:8080
